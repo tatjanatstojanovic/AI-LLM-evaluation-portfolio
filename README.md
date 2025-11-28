@@ -1,3 +1,4 @@
+ChatGPT Image Nov 28, 2025, 03_55_50 PM.png
 <!-- ===== BADGES: SET 1 (Professional Color) ===== -->
 ![LLM Evaluation](https://img.shields.io/badge/LLM%20Evaluation-Expert-blue)
 ![AI Safety](https://img.shields.io/badge/AI%20Safety-Reviewer-darkred)
