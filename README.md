@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="A_cover_image_for_an_AI_LLM_Evaluation_Portfolio_i.png" width="850">
+</p>
+
 # AI LLM Evaluation Portfolio
 
 <!-- ===== BADGES: SET 1 (Professional Color) ===== -->
