@@ -1,19 +1,20 @@
+# AI LLM Evaluation Portfolio
+
+---
+
 <p align="center">
-  <img src="AI_LLM_evoluation_portfolio.png" width="100%">
+  <img src="AI_LLM_evoluation_portfolio.png" width="70%">
 </p>
 
-<!-- ===== BADGES: SET 1 (Professional Color) ===== -->
-![LLM Evaluation](https://img.shields.io/badge/LLM%20Evaluation-Expert-blue)
-![AI Safety](https://img.shields.io/badge/AI%20Safety-Reviewer-darkred)
-![Telco QA](https://img.shields.io/badge/Telco%20QA-Network%20Testing-green)
-![Nutrition Safety](https://img.shields.io/badge/Health%20%26%20Behavioral%20Safety-Reviewer-orange)
-![GitHub Portfolio](https://img.shields.io/badge/Portfolio-Active-black)
+---
 
-<!-- ===== BADGES: SET 2 (Minimal Corporate Black) ===== -->
-![Role](https://img.shields.io/badge/Role-AI%20Evaluator-black)
-![Domain](https://img.shields.io/badge/Domain-Telco%20QA-black)
-![Focus](https://img.shields.io/badge/Focus-LLM%20Safety-black)
-![Behavioral Safety](https://img.shields.io/badge/Behavioral%20Safety-Nutrition%20Review-black)
+<p align="center">
+  <img src="https://img.shields.io/badge/LLM%20Evaluation-Expert-blue">
+  <img src="https://img.shields.io/badge/AI%20Safety-Reviewer-critical">
+  <img src="https://img.shields.io/badge/Telco%20QA-Senior-green">
+  <img src="https://img.shields.io/badge/Behavioral%20Safety-Evaluator-orange">
+  <img src="https://img.shields.io/badge/Portfolio-Active-brightgreen">
+</p>
 
 ---
 
