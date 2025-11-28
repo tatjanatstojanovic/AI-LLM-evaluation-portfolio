@@ -4,113 +4,118 @@ LLM Tested: ChatGPT v5.x (simulation)
 ---
 
 ## Prompt  
-“PPPoE keeps failing with error 651. What should I do?”
+“I am getting *PPPoE Error 651*. My internet won’t connect. What should I do?”
 
 ---
 
 ## Model Output (incorrect example)  
-“Error 651 usually means the line is busy. Try rebooting your router or reinstalling your broadband driver. If that doesn’t help, call your ISP.”
+“Error 651 usually means the modem is disconnected. Restart your router and check the cable. If the issue continues, contact your ISP.”
 
 ---
 
 ## Evaluation  
 
 ### 1) Accuracy — ❌ FAIL  
-The model output is incorrect and mixes **Windows driver issues** with **router-level PPPoE authentication**, which is misleading.
+The model gives only generic steps and completely ignores real PPPoE failure causes.
 
-What the model misses:  
-- Incorrect PPPoE username/password  
-- Missing VLAN tagging (very common failure)  
-- PPPoE server unreachable  
-- MAC binding mismatch at ISP  
-- Incorrect WAN mode (DHCP instead of PPPoE)  
-- Authentication timeout  
-- DSL/ONT link not established  
-- PPP session limit reached  
-- MTU mismatch (common cause of PPPoE drops)  
+Missing critical PPPoE root causes:  
+- Wrong PPPoE username/password  
+- Account suspended / quota exceeded  
+- VLAN tagging missing or incorrect  
+- Wrong WAN mode (DHCP instead of PPPoE)  
+- ISP RADIUS server unreachable  
+- PPP session limit reached (duplicate sessions)  
+- ONT/Modem link-down event before PPP negotiation  
+- MTU/MRU mismatch (common cause of PPPoE failure)  
+- Misconfigured MAC binding  
+- CPE bug after firmware upgrade  
 
-The explanation is technically inaccurate.
+The answer oversimplifies and does not reflect actual troubleshooting.
 
 ---
 
 ### 2) Completeness — ❌ FAIL  
-Missing critical PPPoE troubleshooting:
+A correct PPPoE evaluation requires multiple validation layers.
 
-- ✔ Verify correct PPPoE credentials  
-- ✔ Check VLAN ID configuration (CH/DE/AT often require VLAN 10 or 100)  
-- ✔ Check physical link (WAN port up/down, ONT/DSL sync)  
-- ✔ Verify WAN mode set to PPPoE (not DHCP, not static)  
-- ✔ Check router logs (PPPoE PADT, PADI timeout, authentication failure)  
-- ✔ Check MTU (1492 recommended for PPPoE)  
-- ✔ Confirm ISP MAC binding / CPE registration  
-- ✔ Check if multiple PPP sessions are limited to 1  
-- ✔ Check for maintenance window / ISP-side PPP outage  
+Missing diagnostics:
 
-Model does not present structured PPPoE diagnostics — only generic “restart”.
+- ✔ Verify PPPoE credentials (case-sensitive, full username format)  
+- ✔ Check if account is active at ISP (RADIUS reject)  
+- ✔ Check VLAN tagging (PPPoE requires specific VLAN)  
+- ✔ Ensure WAN is set to PPPoE (not DHCP/Static)  
+- ✔ Check for duplicate session (session already active)  
+- ✔ Review PPP logs (LCP/CHAP failures)  
+- ✔ Test WAN physical link (LOS/LOF if on fiber)  
+- ✔ Validate MTU (1492 standard)  
+- ✔ Reboot ONT/Modem *before* router reconnect  
+- ✔ Verify MAC binding with ISP if required  
+
+The model does not follow any structured PPPoE troubleshooting sequence.
 
 ---
 
-### 3) Safety / Risk — Medium  
+### 3) Safety / Risk — Medium–High  
 The model:  
-- Suggests reinstalling “broadband driver” — irrelevant for routers  
-- Does not guide the user to check credentials → may cause long outages  
-- Does not check if ONT is offline  
-- Encourages resets without context  
-- Can cause user frustration and unnecessary ISP escalations  
+- Suggests reboots without verifying authentication  
+- Does not warn about account suspension (common cause)  
+- Does not check for duplicate PPP sessions → user cannot reconnect  
+- Could cause unnecessary resets of modem/router  
+- Misses VLAN misconfiguration → user can lose more connectivity  
+- Does not check logs → user stays offline for hours  
 
-**Ne pružanje diferenciranih dijagnostičkih koraka može povećati broj poziva tehničkoj podršci i troškove korisničkog servisa.**
+**Ne pružanje diferenciranih dijagnostičkih koraka može voditi do nepotrebnih poziva tehničkoj podršci, što povećava troškove korisničkog servisa.**
 
 ---
 
 ### 4) Tone — ✔ Neutral  
-Neutral tone but technically unhelpful.
+Clear but shallow and not technically helpful.
 
 ---
 
 ### 5) Expected Behavior  
 A correct model should:
 
-1. Validate WAN link  
-   - ✔ ONT/DSL sync OK  
-   - ✔ WAN port link-up  
+1. Validate PPPoE user credentials  
+   - ✔ Correct username/password  
+   - ✔ Account active; no RADIUS reject  
 
-2. Verify PPPoE credentials  
-   - ✔ Username  
-   - ✔ Password  
-   - ✔ Typo check  
+2. Check WAN mode & config  
+   - ✔ WAN set to PPPoE  
+   - ✔ Correct VLAN tag  
+   - ✔ MTU 1492  
 
-3. Check configuration  
-   - ✔ WAN mode set to PPPoE  
-   - ✔ VLAN tag configured if required  
-   - ✔ MTU = 1492  
+3. Review logs  
+   - ✔ LCP timeout  
+   - ✔ CHAP authentication reject  
+   - ✔ PPP session already active  
 
-4. Review router logs  
-   - ✔ Authentication failure  
-   - ✔ Timeouts  
-   - ✔ PADT events  
+4. Validate WAN physical link  
+   - ✔ ONT/Modem LOS/LOF  
+   - ✔ Ethernet link status  
 
-5. Check ISP provisioning  
-   - ✔ MAC binding  
-   - ✔ PPP session limit  
+5. Check ISP-side issues  
+   - ✔ PPP server downtime  
+   - ✔ RADIUS failure  
+   - ✔ Duplicate session  
 
-6. Restart only after validated diagnostics  
-   - ✔ Avoid factory reset unless instructed  
-   - ✔ Do NOT reinstall drivers (not applicable)  
+6. Only then suggest controlled reboot  
+   - ✔ Restart ONT first  
+   - ✔ Then restart router  
 
 ---
 
 ## Final PASS/FAIL Entry  
 
 **Prompt:**  
-“PPPoE keeps failing with error 651. What should I do?”
+“I am getting *PPPoE Error 651*. My internet won’t connect. What should I do?”
 
 **Expected Behavior:**  
-Provide structured PPPoE troubleshooting including credential validation, VLAN tags, WAN link analysis, PPP logs, and MTU configuration.
+Provide structured PPPoE troubleshooting including credential validation, VLAN tag checks, WAN-mode configuration, PPP logs, duplicate sessions, and physical link verification.
 
 **Model Output OK?:** No  
-**Issues Found:** Inaccurate assumptions, incorrect PC-related advice, missing PPPoE diagnostics  
-**Risk Level:** Medium  
+**Issues Found:** Missing authentication checks, missing VLAN checks, missing logs, no MTU validation  
+**Risk Level:** Medium–High  
 **Pass/Fail:** ❌ FAIL  
 
 **Comment:**  
-“The model incorrectly suggests PC driver actions for a router scenario and ignores core PPPoE troubleshooting steps such as verifying credentials, VLAN tagging, MTU configuration, and PPP logs. The response is technically inaccurate and not production-ready.”
+“The model oversimplifies PPPoE troubleshooting and misses essential steps such as validating credentials, confirming VLAN tags, checking PPP logs, and ruling out RADIUS and duplicate-session issues. The answer is incomplete and not reliable for production use.”
