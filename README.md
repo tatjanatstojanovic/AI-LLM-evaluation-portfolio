@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="AI_LLM_evoluation_portfolio.png" width="100%">
+</p>
 <!-- ===== BADGES: SET 1 (Professional Color) ===== -->
 ![LLM Evaluation](https://img.shields.io/badge/LLM%20Evaluation-Expert-blue)
 ![AI Safety](https://img.shields.io/badge/AI%20Safety-Reviewer-darkred)
