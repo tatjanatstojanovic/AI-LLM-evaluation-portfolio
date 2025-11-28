@@ -1,86 +1,119 @@
-# TELCO LLM Evaluation #2 — Nokia Beacon Disconnecting
+# TELCO LLM Evaluation #3 — WAN Disconnected / No Internet  
 LLM Tested: ChatGPT v5.x (simulation)
 
-## Prompt
-“My Nokia Beacon keeps disconnecting every few minutes. What should I do?”
+---
 
-## Model Output (incorrect example)
-“Try restarting the Beacon and place it closer to your modem. It usually disconnects because of weak signal.”
-
-## Evaluation
-
-### 1) Accuracy — ❌ FAIL
-The model ignores real technical causes of Beacon disconnect issues:
-- Mesh backhaul issues (Ethernet vs Wi-Fi backhaul)
-- DFS channel switching (very common Beacon cause)
-- Auto-channel instability
-- Interference from radar/weather stations on 5 GHz
-- Firmware bugs (common in early Beacon builds)
-- Beacon–Gateway distance matrix (placement rules)
-- Incorrect topology (Beacon behind another router → double NAT)
-
-The answer is oversimplified and partially incorrect.
+## Prompt  
+“My router says *WAN Disconnected*. What should I do?”
 
 ---
 
-### 2) Completeness — ❌ FAIL
-Missing critical diagnostics:
-- ✔ Check if Beacon uses Ethernet backhaul (preferred)
-- ✔ Verify mesh signal quality (RSSI, mesh hop count)
-- ✔ Check DFS channel events (causes periodic drops)
-- ✔ Check auto-channel → switch to manual stable channel
-- ✔ Confirm firmware version on both Beacon and main gateway
-- ✔ Check topology (no double NAT, no cascade router)
-- ✔ Check if Beacon is too close or too far (optimal 6–10 m)
-- ✔ Check for overlapping Wi-Fi networks
-
-The model doesn’t present a structured troubleshooting flow.
+## Model Output (incorrect example)  
+“Restart your router and check if the cable is properly plugged in. If it doesn’t work, contact your internet provider.”
 
 ---
 
-### 3) Safety / Risk — Medium–High
-The model:
-- Encourages meaningless restarts  
-- Ignores mesh instability → user keeps experiencing drops  
-- Hides root cause (DFS) → very common in EU apartments  
-- Doesn’t rule out topology conflicts  
-- Can lead to unnecessary device replacement
+## Evaluation  
 
-Lack of accurate diagnostics may increase support calls and user frustration.
+### 1) Accuracy — ❌ FAIL  
+The model gives only superficial steps and ignores technical WAN-layer diagnostics.
+
+It misses critical telco causes:  
+- Incorrect PPPoE credentials  
+- ONT/Modem link down  
+- GPON LOS/LOF alarms  
+- DHCP lease failure  
+- VLAN provisioning issues  
+- Ethernet WAN cable link-status (speed/duplex errors)  
+- MAC binding / MAC mismatch  
+- ISP maintenance windows  
+- Optical power out of range (fiber)  
+- CPE bringing WAN down after firmware crash  
+
+The answer is oversimplified and technically incomplete.
 
 ---
 
-### 4) Tone — ✔ Neutral
-Clear tone but not technically helpful and lacks context.
+### 2) Completeness — ❌ FAIL  
+Missing required WAN troubleshooting steps:
+
+- ✔ Check physical WAN link (LED status, link-up/link-down)  
+- ✔ Verify Ethernet cable (CAT5e/CAT6, no damage)  
+- ✔ Verify WAN port vs LAN port mis-patch  
+- ✔ Check Optical Signal Levels (for fiber)  
+- ✔ Check modem/ONT status (LOS/LOF, update-in-progress)  
+- ✔ Verify VLAN tagging (common WAN failure in CH/DE)  
+- ✔ Check DHCP lease or PPPoE authentication  
+- ✔ Check MAC cloning / MAC registration  
+- ✔ Confirm no double NAT or wrong WAN mode  
+- ✔ Check router logs for PPP drop, DHCP fail, WAN lost  
+
+Model does not give a structured WAN troubleshooting workflow.
 
 ---
 
-### 5) Expected Behavior
+### 3) Safety / Risk — Medium  
+The model:  
+- Encourages meaningless reboots  
+- Misses LOS/LOF optical issues (critical for fiber)  
+- Does not rule out VLAN/PPPoE misconfiguration  
+- Could lead user to reset modem unnecessarily  
+- May cause long outages if WAN authentication is the root cause  
+
+**Ne pružanje diferenciranih dijagnostičkih koraka može voditi do nepotrebnih poziva tehničkoj podršci, što povećava troškove korisničkog servisa.**
+
+---
+
+### 4) Tone — ✔ Neutral  
+Tone is simple, but not helpful for real WAN troubleshooting.
+
+---
+
+### 5) Expected Behavior  
 A correct model should:
-1. Check if the Beacon is using Ethernet or Wi-Fi backhaul  
-2. Verify signal strength between main unit and Beacon  
-3. Check DFS/auto-channel logs  
-4. Suggest switching to a stable non-DFS 5 GHz channel  
-5. Confirm firmware updates  
-6. Verify correct placement (not in corners, behind TV, or near metal)  
-7. Check network topology (no double NAT, no unmanaged switches)  
-8. Reboot mesh only *after* diagnostics
+
+1. Identify WAN technology  
+   - ✔ Fiber (GPON/XPON)  
+   - ✔ DSL (VDSL/ADSL)  
+   - ✔ Cable (DOCSIS)  
+   - ✔ Ethernet/DHCP  
+
+2. Check physical link  
+   - ✔ WAN LED status  
+   - ✔ ONT/Modem LOS/LOF indicators  
+   - ✔ Cable seating & port correctness  
+
+3. Check provisioning  
+   - ✔ VLAN tags  
+   - ✔ PPPoE username/password  
+   - ✔ ISP MAC binding  
+
+4. Review logs  
+   - ✔ PPP authentication failures  
+   - ✔ DHCP renewal errors  
+   - ✔ WAN drop events  
+
+5. Validate configuration  
+   - ✔ Correct WAN mode  
+   - ✔ No double NAT or wrong bridge/router mode  
+
+6. Suggest restart only after diagnostics  
+   - ✔ Avoid factory reset unless last step  
 
 ---
 
-## Final PASS/FAIL Entry
+## Final PASS/FAIL Entry  
 
 **Prompt:**  
-“My Nokia Beacon keeps disconnecting every few minutes.”
+“My router says *WAN Disconnected*. What should I do?”
 
 **Expected Behavior:**  
-Provide structured mesh troubleshooting: backhaul verification, DFS issues, firmware, placement rules, topology validation, and channel analysis.
+Provide structured WAN troubleshooting including physical link checks, PPPoE/DHCP validation, VLAN tagging, ONT/Modem status, and WAN-mode configuration.
 
 **Model Output OK?:** No  
-**Issues Found:** Oversimplified advice, missing Beacon-specific diagnostics, misleading root cause assumption.  
-**Risk Level:** Medium–High  
+**Issues Found:** Oversimplified advice, missing WAN diagnostics, no provisioning checks  
+**Risk Level:** Medium  
 **Pass/Fail:** ❌ FAIL  
 
 **Comment:**  
-“The model provides generic suggestions and ignores key factors for Nokia Beacon mesh stability such as DFS channel switching, backhaul verification, firmware issues, and topology conflicts. The response is incomplete and not suitable for production troubleshooting.”
-
+“The model gives generic suggestions and ignores essential WAN-layer diagnostics such as PPPoE credentials, DHCP lease issues, VLAN provisioning, ONT alarms, and physical link verification. The response is incomplete and not suitable for production troubleshooting.”
