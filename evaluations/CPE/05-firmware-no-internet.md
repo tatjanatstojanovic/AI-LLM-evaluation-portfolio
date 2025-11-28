@@ -1,122 +1,128 @@
-# TELCO LLM Evaluation #4 — PPPoE Error 651  
+# TELCO LLM Evaluation #5 — Firmware Update → No Internet  
 LLM Tested: ChatGPT v5.x (simulation)
 
 ---
 
 ## Prompt  
-“I am getting *PPPoE Error 651*. My internet won’t connect. What should I do?”
+“I updated my router’s firmware and now I have no internet. What should I do?”
 
 ---
 
 ## Model Output (incorrect example)  
-“Error 651 usually means the modem is disconnected. Restart your router and check the cable. If the issue continues, contact your ISP.”
+“Sometimes updates cause bugs. Restart your router or reset it to factory settings. If it still doesn’t work, call your provider.”
 
 ---
 
 ## Evaluation  
 
 ### 1) Accuracy — ❌ FAIL  
-The model gives only generic steps and completely ignores real PPPoE failure causes.
+The model gives surface-level advice and ignores all realistic firmware-related failure modes.
 
-Missing critical PPPoE root causes:  
-- Wrong PPPoE username/password  
-- Account suspended / quota exceeded  
-- VLAN tagging missing or incorrect  
-- Wrong WAN mode (DHCP instead of PPPoE)  
-- ISP RADIUS server unreachable  
-- PPP session limit reached (duplicate sessions)  
-- ONT/Modem link-down event before PPP negotiation  
-- MTU/MRU mismatch (common cause of PPPoE failure)  
-- Misconfigured MAC binding  
-- CPE bug after firmware upgrade  
+Missing technical causes:
+- Configuration rollback failure  
+- WAN mode reset (PPPoE → DHCP)  
+- PPPoE password erased  
+- VLAN tag lost after update  
+- DNS overwritten with wrong values  
+- Band steering disabled  
+- Bridge mode disabled after upgrade  
+- IPv6 enabled unintentionally causing routing issues  
+- Firewall rules reset  
+- MAC clone removed (ISP rejects connection)  
+- Auto-channel → DFS after firmware (Wi-Fi appears “offline”)  
 
-The answer oversimplifies and does not reflect actual troubleshooting.
+The model skips all real CPE scenarios.
 
 ---
 
 ### 2) Completeness — ❌ FAIL  
-A correct PPPoE evaluation requires multiple validation layers.
+Firmware-related outages require **full configuration validation**.
 
 Missing diagnostics:
 
-- ✔ Verify PPPoE credentials (case-sensitive, full username format)  
-- ✔ Check if account is active at ISP (RADIUS reject)  
-- ✔ Check VLAN tagging (PPPoE requires specific VLAN)  
-- ✔ Ensure WAN is set to PPPoE (not DHCP/Static)  
-- ✔ Check for duplicate session (session already active)  
-- ✔ Review PPP logs (LCP/CHAP failures)  
-- ✔ Test WAN physical link (LOS/LOF if on fiber)  
-- ✔ Validate MTU (1492 standard)  
-- ✔ Reboot ONT/Modem *before* router reconnect  
-- ✔ Verify MAC binding with ISP if required  
+- ✔ Check WAN mode (DHCP / PPPoE / Static)  
+- ✔ Check PPP credentials (often wiped after upgrade)  
+- ✔ Reapply VLAN tagging  
+- ✔ Check DNS settings (manual DNS wiped → no browsing)  
+- ✔ Validate MAC binding (ISP expects old MAC)  
+- ✔ Confirm bridge/router mode status  
+- ✔ Check IPv4/IPv6 routing tables  
+- ✔ Inspect logs for “WAN DHCP Discover timeout”  
+- ✔ Verify if firmware rollback is available  
+- ✔ Reapply Wi-Fi SSID settings (hidden SSID bug common after updates)  
 
-The model does not follow any structured PPPoE troubleshooting sequence.
+The model does not follow a realistic troubleshooting chain.
 
 ---
 
-### 3) Safety / Risk — Medium–High  
-The model:  
-- Suggests reboots without verifying authentication  
-- Does not warn about account suspension (common cause)  
-- Does not check for duplicate PPP sessions → user cannot reconnect  
-- Could cause unnecessary resets of modem/router  
-- Misses VLAN misconfiguration → user can lose more connectivity  
-- Does not check logs → user stays offline for hours  
+### 3) Safety / Risk — ⚠ Medium–High  
+The model suggests **factory reset** prematurely — dangerous.
+
+Risks:
+- User loses entire configuration  
+- PPPoE details erased  
+- VLAN setup erased  
+- Bridge mode broken  
+- Static IP configurations lost  
+- Wi-Fi settings reset → mesh nodes disconnect  
 
 **Ne pružanje diferenciranih dijagnostičkih koraka može voditi do nepotrebnih poziva tehničkoj podršci, što povećava troškove korisničkog servisa.**
 
 ---
 
 ### 4) Tone — ✔ Neutral  
-Clear but shallow and not technically helpful.
+Clear but not helpful.
 
 ---
 
 ### 5) Expected Behavior  
 A correct model should:
 
-1. Validate PPPoE user credentials  
-   - ✔ Correct username/password  
-   - ✔ Account active; no RADIUS reject  
+#### 1. Validate WAN configuration  
+- ✔ WAN mode correct (PPPoE/DHCP/Static)  
+- ✔ PPP username/password still present  
+- ✔ VLAN tag still applied  
 
-2. Check WAN mode & config  
-   - ✔ WAN set to PPPoE  
-   - ✔ Correct VLAN tag  
-   - ✔ MTU 1492  
+#### 2. Validate routing  
+- ✔ DNS correct  
+- ✔ IPv4/IPv6 routing stable  
+- ✔ Gateway reachable  
 
-3. Review logs  
-   - ✔ LCP timeout  
-   - ✔ CHAP authentication reject  
-   - ✔ PPP session already active  
+#### 3. Validate interface state  
+- ✔ WAN link up  
+- ✔ DHCP packets exchanged (Discover/Offer)  
+- ✔ PPP logs (CHAP/LCP)  
 
-4. Validate WAN physical link  
-   - ✔ ONT/Modem LOS/LOF  
-   - ✔ Ethernet link status  
+#### 4. Validate Wi-Fi / LAN  
+- ✔ SSID not reset  
+- ✔ Mesh nodes still paired  
+- ✔ Band steering not disabled  
 
-5. Check ISP-side issues  
-   - ✔ PPP server downtime  
-   - ✔ RADIUS failure  
-   - ✔ Duplicate session  
+#### 5. ISP-side validation  
+- ✔ MAC address unchanged or rebind  
+- ✔ Account still active  
 
-6. Only then suggest controlled reboot  
-   - ✔ Restart ONT first  
-   - ✔ Then restart router  
+#### 6. Controlled recovery  
+- ✔ Reboot ONT/modem first  
+- ✔ Reboot router second  
+- ✔ Firmware rollback (if supported)  
+
+No factory reset unless final step.
 
 ---
 
 ## Final PASS/FAIL Entry  
 
 **Prompt:**  
-“I am getting *PPPoE Error 651*. My internet won’t connect. What should I do?”
+“I updated my router’s firmware and now I have no internet. What should I do?”
 
 **Expected Behavior:**  
-Provide structured PPPoE troubleshooting including credential validation, VLAN tag checks, WAN-mode configuration, PPP logs, duplicate sessions, and physical link verification.
+Provide structured firmware-diagnostic workflow including WAN config validation, VLAN checks, DNS/routing issues, logs, and MAC binding.
 
 **Model Output OK?:** No  
-**Issues Found:** Missing authentication checks, missing VLAN checks, missing logs, no MTU validation  
+**Issues Found:** Dangerous reset advice, missing WAN config checks, missing VLAN/DNS/routing diagnostics  
 **Risk Level:** Medium–High  
 **Pass/Fail:** ❌ FAIL  
 
 **Comment:**  
-“The model oversimplifies PPPoE troubleshooting and misses essential steps such as validating credentials, confirming VLAN tags, checking PPP logs, and ruling out RADIUS and duplicate-session issues. The answer is incomplete and not reliable for production use.”
-
+“The model provides oversimplified guidance and prematurely suggests a factory reset. It ignores critical firmware-related failures such as erased PPPoE credentials, missing VLAN tags, incorrect WAN mode, DNS corruption, and MAC-binding issues. The answer is not suitable for production troubleshooting.”
